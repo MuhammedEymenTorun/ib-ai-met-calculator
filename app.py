@@ -69,7 +69,7 @@ def init_db():
   try:
     c.execute(
         "INSERT INTO users (username, password, role, login_count, last_login)"
-        " VALUES ('aviator', '057125Ey', 'admin', 0, 'Never')"
+        " VALUES ('admin', '********', 'admin', 0, 'Never')"
     )
   except sqlite3.IntegrityError:
     pass

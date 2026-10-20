@@ -833,7 +833,7 @@ else:
       x = st.number_input("Occurrences (x):", value=2, min_value=0, step=1)
       if st.button("Calculate Poisson"):
         st.success(
-            f"**P(X={x}):** `{(math.exp(-lam)*(lam**x))/mt.factorial(int(x)):.4f}`"
+            f"**P(X={x}):** `{(mt.exp(-lam)*(lam**x))/mt.factorial(int(x)):.4f}`"
         )
 
     elif "Chi-Squared" in formula and lvl in ["All", "HL"]:

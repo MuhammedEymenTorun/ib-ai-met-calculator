@@ -3,12 +3,12 @@ import math as mt
 import sqlite3
 import streamlit as st
 
-# Page Setup
+# Page Setup & Mobile/Tablet Responsive Configuration
 st.set_page_config(
-    page_title="IB AI MET Calculator", page_icon="📐", layout="wide"
+    page_title="IB AI MET Calculator", page_icon="🧮", layout="wide"
 )
 
-# Custom Styling
+# Custom Styling optimized for Mobile, Tablet and Desktop
 st.markdown(
     """
     <style>
@@ -32,6 +32,12 @@ st.markdown(
         border-radius: 8px;
         border-left: 4px solid #4CAF50;
         margin-bottom: 15px;
+    }
+    /* Mobile optimization */
+    @media (max-width: 768px) {
+        .stColumns {
+            flex-direction: column !important;
+        }
     }
     </style>
 """,
@@ -65,14 +71,20 @@ def init_db():
             )"""
   )
 
-  # Default Admin: aviator / 057125Ey
+  # Secure Admin Credentials via Streamlit Secrets
+  admin_pass = st.secrets.get("ADMIN_PASSWORD", "default_safe_pass_123")
   try:
     c.execute(
         "INSERT INTO users (username, password, role, login_count, last_login)"
-        " VALUES ('aviatorun', '057125Ey', 'admin', 0, 'Never')"
+        " VALUES ('aviator', ?, 'admin', 0, 'Never')",
+        (admin_pass,),
     )
   except sqlite3.IntegrityError:
-    pass
+    c.execute(
+        "UPDATE users SET password = ? WHERE username = 'aviator'",
+        (admin_pass,),
+    )
+
   conn.commit()
   conn.close()
 
@@ -262,7 +274,7 @@ if not st.session_state["logged_in"]:
         st.error("Please fill in all fields.")
 
 else:
-  # SIDEBAR (Developer Info & Contact Added)
+  # SIDEBAR (Developer Info & Contact)
   with st.sidebar:
     st.markdown(f"### 👤 **{st.session_state['username'].upper()}**")
     st.caption(f"Role: `{st.session_state['role'].upper()}`")
@@ -328,14 +340,14 @@ else:
     formula = st.selectbox(
         "Select Formula / Tool:",
         [
-            "1. Arithmetic Sequence & Series (SL)",
-            "2. Geometric Sequence & Series (SL)",
-            "3. Compound Interest & Depreciation (SL)",
-            "4. Percentage Error (SL)",
-            "5. Exponents & Logarithms Laws (SL)",
-            "6. Rational Exponents & Surds (SL)",
-            "7. HL Matrices: Determinant & Inverse (HL)",
-            "8. HL Complex Numbers: Modulus & Argument (HL)",
+            "Arithmetic Sequence & Series (SL)",
+            "Geometric Sequence & Series (SL)",
+            "Compound Interest & Depreciation (SL)",
+            "Percentage Error (SL)",
+            "Exponents & Logarithms Laws (SL)",
+            "Rational Exponents & Surds (SL)",
+            "HL Matrices: Determinant & Inverse (HL)",
+            "HL Complex Numbers: Modulus & Argument (HL)",
         ],
     )
 
@@ -494,11 +506,11 @@ else:
     formula = st.selectbox(
         "Select Formula / Tool:",
         [
-            "1. Quadratic Roots & Vertex (SL)",
-            "2. Exponential Growth & Decay Models (SL)",
-            "3. Composite & Inverse Functions (SL)",
-            "4. Sine/Cosine Sinusoidal Models (SL)",
-            "5. HL Polynomial Roots & Vieta's Relations (HL)",
+            "Quadratic Roots & Vertex (SL)",
+            "Exponential Growth & Decay Models (SL)",
+            "Composite & Inverse Functions (SL)",
+            "Sine/Cosine Sinusoidal Models (SL)",
+            "HL Polynomial Roots & Vieta's Relations (HL)",
         ],
     )
 
@@ -597,13 +609,13 @@ else:
     formula = st.selectbox(
         "Select Formula / Tool:",
         [
-            "1. 2D & 3D Distance Between Points (SL)",
-            "2. Sine & Cosine Rules & Triangle Area (SL)",
-            "3. Sector Arc Length & Area (SL)",
-            "4. Volume & Surface Area of Solids (SL)",
-            "5. HL Vectors: Dot Product & Angle (HL)",
-            "6. HL Vectors: Cross Product & Area (HL)",
-            "7. HL 3D Lines & Planes (HL)",
+            "2D & 3D Distance Between Points (SL)",
+            "Sine & Cosine Rules & Triangle Area (SL)",
+            "Sector Arc Length & Area (SL)",
+            "Volume & Surface Area of Solids (SL)",
+            "HL Vectors: Dot Product & Angle (HL)",
+            "HL Vectors: Cross Product & Area (HL)",
+            "HL 3D Lines & Planes (HL)",
         ],
     )
 
@@ -734,14 +746,14 @@ else:
     formula = st.selectbox(
         "Select Formula / Tool:",
         [
-            "1. Summary Statistics: Mean, Variance & Std Dev (SL)",
-            "2. Z-Score Standardization (SL)",
-            "3. Expected Value E(X) & Variance Var(X) (SL)",
-            "4. Binomial Distribution P(X=x) (SL)",
-            "5. Normal Distribution Probability (SL)",
-            "6. HL Poisson Distribution (HL)",
-            "7. HL Chi-Squared Test Statistic (HL)",
-            "8. Pearson Correlation Coefficient r (SL)",
+            "Summary Statistics: Mean, Variance & Std Dev (SL)",
+            "Z-Score Standardization (SL)",
+            "Expected Value E(X) & Variance Var(X) (SL)",
+            "Binomial Distribution P(X=x) (SL)",
+            "Normal Distribution Probability (SL)",
+            "HL Poisson Distribution (HL)",
+            "HL Chi-Squared Test Statistic (HL)",
+            "Pearson Correlation Coefficient r (SL)",
         ],
     )
 
@@ -821,7 +833,7 @@ else:
       x = st.number_input("Occurrences (x):", value=2, min_value=0, step=1)
       if st.button("Calculate Poisson"):
         st.success(
-            f"**P(X={x}):** `{(mt.exp(-lam)*(lam**x))/mt.factorial(int(x)):.4f}`"
+            f"**P(X={x}):** `{(math.exp(-lam)*(lam**x))/mt.factorial(int(x)):.4f}`"
         )
 
     elif "Chi-Squared" in formula and lvl in ["All", "HL"]:
@@ -852,13 +864,13 @@ else:
     formula = st.selectbox(
         "Select Formula / Tool:",
         [
-            "1. Power Rule Derivative & Slope (SL)",
-            "2. Product & Quotient Rules (SL)",
-            "3. Power Rule Integration (SL)",
-            "4. Trapezoidal Rule for Area (SL)",
-            "5. Kinematics: Displacement, Velocity, Acceleration (SL)",
-            "6. HL Euler's Method for Differential Equations (HL)",
-            "7. HL Integration by Parts (HL)",
+            "Power Rule Derivative & Slope (SL)",
+            "Product & Quotient Rules (SL)",
+            "Power Rule Integration (SL)",
+            "Trapezoidal Rule for Area (SL)",
+            "Kinematics: Displacement, Velocity, Acceleration (SL)",
+            "HL Euler's Method for Differential Equations (HL)",
+            "HL Integration by Parts (HL)",
         ],
     )
 
